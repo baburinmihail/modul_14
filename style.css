@@ -55,7 +55,7 @@ main{
 
 .section-bottom{
     padding-top: 50px;
-    background: black;
+    background: #000000;
 }
 
 .text-pading{
@@ -76,4 +76,9 @@ footer{
     padding-top: 15px;
     padding-bottom: 15px;
 }
+
+.inputBirthday{
+    max-width: 60px;
+}
+
 /*/footer*/

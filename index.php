@@ -137,45 +137,9 @@
             <div class="col-3"></div>
         </div>
     </div>
-    <div class="row max-width">
-        <div class="col-12">
-            <h3>До конца акции осталось:</h3>
-            <div class="akcia_block">
-                <span id="h">h</span>
-                <span id="m">m</span>
-                <span id="s">s</span>
-            </div>
-        </div>
-    </div>
-
 </footer>
 <!-- /Подвал -->
 <!-- Bootstrap в связке с Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-<script type="text/javascript">
-    let date = new Date('Jan 31 2023 13:18:00');
-
-    //разница между нынешней датой и указанной
-    function countTime(){
-        let now = new Date();
-        gap = date - now;
-
-        let hours = Math.floor( gap / 1000 / 60 / 60) %  24 ;
-        let minuts = Math.floor( gap / 1000 / 60 ) % 60;
-        let seconds = Math.floor( gap / 1000) % 60 ;
-
-        if (gap < 0){
-            date.setDate(date.getDate() + 1);
-        }else {
-            document.querySelector('#h').innerText = hours + ' часов';
-            document.querySelector('#m').innerText = minuts + ' минут';
-            document.querySelector('#s').innerText = seconds + ' секунд';
-        }
-    }
-
-    //включаю функцию каждую секунду
-    setInterval(countTime, 1000)
-
-</script>
 </body>
 </html>
