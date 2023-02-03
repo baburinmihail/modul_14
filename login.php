@@ -12,10 +12,15 @@ $users = [
                 ]
 ];
 
-setcookie("name", "misha");
 
 $username = $_POST['login'] ?? null;
 $password = $_POST['password'] ?? null;
+
+$birthday_day = $_POST['input_day']?? null;
+$birthday_mouth = $_POST['input_mouth']?? null;
+$birthday_year = $_POST['input_year']?? null;
+
+
 
 if (null !== $username || null !== $password) {
 
@@ -40,12 +45,14 @@ function userAndPassord($users,$newHashPassword,$username ){
 
 $truePasswordFunction = userAndPassord($users,$newHashPassword,$username);
 
-
     // Если пароль из базы совпадает с паролем из формы
     if ($truePasswordFunction === true) {
 
         //старт сесии
+        session_start();
         session_status();
+
+
 
         //время пихаю в переменню которая уйдет в сесию, которая уйдет в js
         $timeJsAkcia = 'Feb 02 2023 23:59:59';
@@ -54,15 +61,34 @@ $truePasswordFunction = userAndPassord($users,$newHashPassword,$username);
         $myTime = date('l jS \of F Y h:i:s A');
         $_SESSION ['myTime'] = $myTime;
 
-            // Пишем в сессию информацию о том, что мы авторизовались:
+        // Пишем в сессию информацию о том, что мы авторизовались:
         $_SESSION['auth'] = true;
 
         // Пишем в сессию логин и id пользователя
         $_SESSION['login'] = $username;
 
-        //день рождения
-        $birthday = 0;
-        $_SESSION['birthday'] = $birthday;
+
+        if (null === ($_SESSION['birthday_day']) || null === ($_SESSION['birthday_mouth']) || null === ($_SESSION['birthday_year'])){
+
+            //день рождения
+            $_SESSION['birthday_day'] = 0;
+            $_SESSION['birthday_mouth'] = 0;
+            $_SESSION['birthday_year'] = 0;
+            //setcookie("birthday_day", ($_SESSION['birthday_day']));
+            //setcookie("birthday_mouth", ($_SESSION['birthday_mouth']));
+            //setcookie("birthday_year", ($_SESSION['birthday_year']));
+            //setcookie("birthday_day2", (2));
+        }else{
+            $_SESSION['birthday_day'] = $birthday_day;
+            $_SESSION['birthday_mouth'] = $birthday_mouth;
+            $_SESSION['birthday_year'] = $birthday_year;
+            //setcookie("birthday_day2", (3));
+            //setcookie("birthday_day", ($_SESSION['birthday_day']));
+            //setcookie("birthday_mouth", ($_SESSION['birthday_mouth']));
+            //setcookie("birthday_year", ($_SESSION['birthday_year']));
+        }
+
+
 
     }
 }
@@ -234,29 +260,43 @@ if ($auth) {?>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="modal-body" style="background: black">
-                        <div class="row max-width" >
-                            <div class="col-12">
-                                <h3>Когда у тебя день рождения?</h3>
+                        <form action="login.php" method="POST">
+                            <div class="row max-width" >
+                                <div class="col-12">
+                                    <h3>Когда у тебя день рождения?</h3>
+                                </div>
+                                <div class="col-2">
+                                    <input name="input_day" type="number" min="1" max="30" id="input_day" class="inputBirthday" required>
+                                </div>
+                                <div class="col-2">
+                                    <h3>день</h3>
+                                </div>
+                                <div class="col-2">
+                                    <input name="input_mouth" type="number" min="1" max="12" id="input_mouth" class="inputBirthday" required>
+                                </div>
+                                <div class="col-2">
+                                    <h3>месяц</h3>
+                                </div>
+                                <div class="col-3">
+                                    <input name="input_year" type="number" min="1971" id="input_year"  class="inputBirthday" required>
+                                </div>
+                                <div class="col-1">
+                                    <h5>год</h5>
+                                </div>
+                                <div class="col-9">
+                                </div>
+                                <div class="col-3">
+                                    <input type="submit" id="button_otp" class="button_otp"  value="Отправить">
+                                </div>
+                                <!--скрытые поля для ввода логина пароля-->
+                                <div class="col-6">
+                                    <input name="login" type="text" style="display: none;" value="<?php echo "$username";?>">
+                                </div>
+                                <div class="col-6">
+                                    <input name="password"  type="password"  style="visibility: hidden;" value="<?php echo "$password";?>">
+                                </div>
                             </div>
-                            <div class="col-2">
-                                <input type="number" min="1" max="30" class="inputBirthday">
-                            </div>
-                            <div class="col-2">
-                                <h3>день</h3>
-                            </div>
-                            <div class="col-2">
-                                <input type="number" min="1" max="12" class="inputBirthday">
-                            </div>
-                            <div class="col-2">
-                                <h3>месяц</h3>
-                            </div>
-                            <div class="col-3">
-                                <input type="number" min="1950"  class="inputBirthday">
-                            </div>
-                            <div class="col-1">
-                                <h5>год</h5>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                     <div class="modal-footer" id="modal-footer" style="background: black">
                         <!--    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -278,6 +318,7 @@ if ($auth) {?>
         //разница между нынешней датой и указанной
         function countTime(){
             //let now = new Date();
+            //перевожу время с формата php в js
             let myTime = new Date(<?php echo strtotime(($_SESSION ['myTime'])); ?>);
             gap = date - myTime;
 
@@ -301,49 +342,49 @@ if ($auth) {?>
         let myModal = new bootstrap.Modal(document.getElementById('myModal'), {})
         myModal.show()
     </script>
+
     <!-- модалка с днюхой-->
     <script>
-        let myModal2 = new bootstrap.Modal(document.getElementById('myModal2'), {})
-        myModal2.show()
-    </script>
-    <!--
-    <script>
-        document.querySelector('#birthday').style = 'visibility: hidden;';
-        //let birthday = prompt(title, [default]);
-        let birthday = (<?php echo $_SESSION ['birthday']?>);
-        if  (birthday == 0){
-            birthday = prompt('когда вы роделись?', 25);
-        }else {
-            document.querySelector('#birthday').innerText = birthday;
-            document.querySelector('#birthday').style = 'visibility: visible;';
-        }
 
-    </script>
-    -->
-    <script>
+        let birthday_day = <?php echo $_SESSION['birthday_day'] ?>;
+        let birthday_mouth = <?php echo $_SESSION['birthday_mouth'] ?>;
+        let birthday_year = <?php echo $_SESSION['birthday_year'] ?>;
+
+        console.log(birthday_day)
+        console.log(birthday_mouth)
+        console.log(birthday_year)
+
+        //проверка заполнености sesion
+        if ( birthday_day == 0 || birthday_mouth == 0 || birthday_year == 0 )
+        {
+            let myModal2 = new bootstrap.Modal(document.getElementById('myModal2'), {})
+            //вскрываю модалку
+            myModal2.show();
+            document.querySelector('#myModal2').style.visibility = "visibility ";
+
+        }else {}
+
+
         //сейчас
         let now = new Date();
         console.log(now);
-
         //заданная днюха
-        let birthday = 'Feb 02 2023'
-
+        //let birthday = 'Feb 02 2023'
         //разница
         let gap = date - birthday;
-
-
         let day = Math.floor( gap / 1000 / 60 / 60) %  24 ;
         console.log(day);
-
         //Писал форму для даты и время для вывода трех переменных и дальнейшей их обработки
+
+
     </script>
     </body>
 </html>
 <?php }
 else {
+    session_destroy();
     $new_url = 'index.php';
     header('Location: '.$new_url);
-
 }
 ?>
 
