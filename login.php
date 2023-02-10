@@ -20,6 +20,33 @@ $birthday_day = $_POST['input_day']?? null;
 $birthday_mouth = $_POST['input_mouth']?? null;
 $birthday_year = $_POST['input_year']?? null;
 
+//полезные функция1
+function getUsersList($users){
+    echo '<pre>';
+    echo var_export($users);
+    echo '</pre>';
+};
+
+//getUsersList($users);
+
+
+
+//полезные функция2
+function existsUser($users){
+    $username = "admin";
+
+    foreach ($users as $arr){
+        foreach ($arr as $key2 => $arr2){
+            if ($username === $key2){
+                echo $username;
+            }
+            else {
+            }
+        }
+    }
+};
+
+//existsUser($users);
 
 
 if (null !== $username || null !== $password) {
@@ -68,24 +95,24 @@ $truePasswordFunction = userAndPassord($users,$newHashPassword,$username);
         $_SESSION['login'] = $username;
 
 
-        if (null === ($_SESSION['birthday_day']) || null === ($_SESSION['birthday_mouth']) || null === ($_SESSION['birthday_year'])){
-
+        if (null === $birthday_day || null === $birthday_mouth || null === $birthday_year){
+        //if (0 === 0){
             //день рождения
-            $_SESSION['birthday_day'] = 0;
-            $_SESSION['birthday_mouth'] = 0;
-            $_SESSION['birthday_year'] = 0;
-            //setcookie("birthday_day", ($_SESSION['birthday_day']));
-            //setcookie("birthday_mouth", ($_SESSION['birthday_mouth']));
-            //setcookie("birthday_year", ($_SESSION['birthday_year']));
-            //setcookie("birthday_day2", (2));
+            //$_SESSION['birthday_day'] = 0;
+            //$_SESSION['birthday_mouth'] = 0;
+            //$_SESSION['birthday_year'] = 0;
+            $birthday_day = 0;
+            $birthday_mouth = 0;
+            $birthday_year = 0;
+            setcookie("birthday_day", $birthday_day);
+            setcookie("birthday_mouth", $birthday_mouth);
+            setcookie("birthday_year", $birthday_year);
+            setcookie("birthday_day2", 2);
         }else{
-            $_SESSION['birthday_day'] = $birthday_day;
-            $_SESSION['birthday_mouth'] = $birthday_mouth;
-            $_SESSION['birthday_year'] = $birthday_year;
-            //setcookie("birthday_day2", (3));
-            //setcookie("birthday_day", ($_SESSION['birthday_day']));
-            //setcookie("birthday_mouth", ($_SESSION['birthday_mouth']));
-            //setcookie("birthday_year", ($_SESSION['birthday_year']));
+            setcookie("birthday_day2", (3));
+            setcookie("birthday_day", ($birthday_day));
+            setcookie("birthday_mouth", ($birthday_mouth));
+            setcookie("birthday_year", ($birthday_year));
         }
 
 
@@ -153,6 +180,9 @@ if ($auth) {?>
                 <div class="check-in">
                     <h5>Привет! <?php echo "$username";?></h5>
                     <a class="nav_link" href="/index.php"><h6>Выход</h6></a>
+                    <p id="start_day">Время входа на сайт <h6 id="start_day_h5">365</h6></p>
+                    <p id="best_dey">до следующего дня рождения <h6 id="best_dey_h5">365</h6></p>
+                    <p id="skidka">У тебя днюха, лови 5% скидки></p>
                 </div>
             </div>
         </div>
@@ -315,6 +345,10 @@ if ($auth) {?>
         let dat = '<?php echo $_SESSION ['timeJsAkcia']?>';
         let date = new Date(dat);
 
+        let myTime2 = new Date(<?php echo strtotime(($_SESSION ['myTime'])); ?>);
+        let date2 = new Date(myTime2);
+        document.querySelector('#start_day_h5').innerText = date2;
+
         //разница между нынешней датой и указанной
         function countTime(){
             //let now = new Date();
@@ -341,43 +375,91 @@ if ($auth) {?>
     <script>
         let myModal = new bootstrap.Modal(document.getElementById('myModal'), {})
         myModal.show()
-    </script>
 
+    </script>
     <!-- модалка с днюхой-->
     <script>
 
-        let birthday_day = <?php echo $_SESSION['birthday_day'] ?>;
-        let birthday_mouth = <?php echo $_SESSION['birthday_mouth'] ?>;
-        let birthday_year = <?php echo $_SESSION['birthday_year'] ?>;
+        console.log("начало");
+        document.querySelector('#best_dey').style.visibility = "hidden";
+        document.querySelector('#best_dey').style.visibility = "hidden";
+        document.querySelector('#skidka').style.visibility = "hidden";
 
-        console.log(birthday_day)
-        console.log(birthday_mouth)
-        console.log(birthday_year)
+        //кидаю cookie из php в js
+        cookieValueBirthday_day = document.cookie.replace(/(?:(?:^|.*;\s*)birthday_day\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+        cookieValueBirthday_mouth = document.cookie.replace(/(?:(?:^|.*;\s*)birthday_mouth\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+        cookieValueBirthday_year = document.cookie.replace(/(?:(?:^|.*;\s*)birthday_year\s*\=\s*([^;]*).*$)|^.*$/, "$1");
 
-        //проверка заполнености sesion
-        if ( birthday_day == 0 || birthday_mouth == 0 || birthday_year == 0 )
-        {
-            let myModal2 = new bootstrap.Modal(document.getElementById('myModal2'), {})
+        console.log(cookieValueBirthday_day);
+        console.log(cookieValueBirthday_mouth);
+        console.log(cookieValueBirthday_year);
+
+        //проверка заполненость
+        if ( cookieValueBirthday_day == 0 || cookieValueBirthday_mouth == 0 || cookieValueBirthday_year == 0 ){
+
             //вскрываю модалку
+            let myModal2 = new bootstrap.Modal(document.getElementById('myModal2'), {})
             myModal2.show();
-            document.querySelector('#myModal2').style.visibility = "visibility ";
+            document.querySelector('#myModal2').style.visibility = "visible ";
 
-        }else {}
+        }else {
+
+            //сейчас
+            let myTime = new Date(<?php echo strtotime(($_SESSION ['myTime'])); ?>);
+            //Нынешний год пользователя
+            let yearUserNow = String(myTime.getFullYear())
+            let yearUserNow2 = String(myTime.getFullYear()+1)
+
+            //день рождения пользователя
+            let timeUser = new Date( cookieValueBirthday_mouth+'.'+ cookieValueBirthday_day+'.'+ yearUserNow);
+
+            var a1 = Date.parse(myTime);
+            console.log(a1)
+            var b2 = Date.parse(timeUser);
+            console.log(b2)
+            //если день рождения уже прошел
+            if ( b2 < a1){
+                timeUser = new Date( cookieValueBirthday_mouth+'.'+ cookieValueBirthday_day+'.'+ yearUserNow2);
+            }else {
+                timeUser = new Date( cookieValueBirthday_mouth+'.'+ cookieValueBirthday_day+'.'+ yearUserNow);
+            }
 
 
-        //сейчас
-        let now = new Date();
-        console.log(now);
-        //заданная днюха
-        //let birthday = 'Feb 02 2023'
-        //разница
-        let gap = date - birthday;
-        let day = Math.floor( gap / 1000 / 60 / 60) %  24 ;
-        console.log(day);
-        //Писал форму для даты и время для вывода трех переменных и дальнейшей их обработки
+            let month = timeUser.getMonth()
+            let day = timeUser.getDate()
+            let myTimeMonth = myTime.getMonth()
+            let myTimeDate = myTime.getDate()
+
+
+            if (month == myTimeMonth && day == myTimeDate){
+                console.log("сегодня твой день")
+                document.querySelector('#skidka').style.visibility = "visible";
+
+            }else {
+                console.log("не сегодня")
+            }
+
+            // парсим их с помощью нативного JS
+            let a = Date.parse(timeUser);//start
+            let b = Date.parse(myTime);//end
+
+            console.log(timeUser);
+            console.log(myTime);
+
+
+            // получаем количество дней между датами
+            let daysToBythd = Math.floor(Math.abs(b-a)/(1000*60*60*24)) + 1 ;
+            console.log(daysToBythd);
+
+            document.querySelector('#best_dey').style.visibility = "visible";
+            document.querySelector('#best_dey_h5').style.visibility = "visible";
+            document.querySelector('#best_dey_h5').innerText = daysToBythd;
+
+        }
 
 
     </script>
+
     </body>
 </html>
 <?php }
@@ -385,6 +467,7 @@ else {
     session_destroy();
     $new_url = 'index.php';
     header('Location: '.$new_url);
+
 }
 ?>
 
